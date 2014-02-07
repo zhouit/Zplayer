@@ -1,0 +1,73 @@
+#bg{
+ -fx-border-color:black;
+ -fx-border-radius:5;
+ -fx-border-width:1;
+ -fx-background-image:url("../images/bamboo.jpg");
+}
+
+#lyric{
+  -fx-background-color: null;
+  -fx-padding:3 48.5;
+  -fx-background-image:url("../images/LyricConfig.png");
+}
+
+#lyric:hover{
+  -fx-background-position:50% 0%;
+}
+
+#mixer{
+  -fx-background-color: null;
+  -fx-padding:3 48.5;
+  -fx-background-image:url("../images/MusicConfig.png");
+}
+
+#mixer:hover{
+  -fx-background-position:50% 0%;
+}
+
+#update{
+  -fx-background-color: null;
+  -fx-padding:3 48.5;
+  -fx-background-image:url("../images/SoftUpdataConfig.png");
+}
+
+#update:hover{
+  -fx-background-position:50% 0%;
+}
+
+#lyric:selected,#mixer:selected,#update:selected{
+	-fx-background-position:100% 0%;
+}
+
+.tab-pane *.tab-header-background {
+    -fx-background-color:null;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 1 2 0 50;
+}
+
+.tab-content-area {
+    -fx-background-color:rgb(255,255,255,0.4);
+    -fx-border-color:black;
+    -fx-border-width: 1;
+    -fx-background-insets: 0 3;
+    -fx-border-radius: 10;
+    -fx-border-insets: 0 3;
+}
+
+#WinClose{
+ -fx-background-image:url("../images/WinClose.png");
+ -fx-background-position:0% 0%;
+ -fx-cursor:hand;
+}
+
+#WinClose:hover{
+ -fx-background-position:33.5% 0%;
+}
+
+#button{
+  -fx-background-image: url("../images/button.png");
+  -fx-background-color: null;
+  -fx-cursor: hand ;
+}

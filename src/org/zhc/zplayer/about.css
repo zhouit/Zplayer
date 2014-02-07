@@ -1,0 +1,23 @@
+#bg{
+ -fx-border-color:black;
+ -fx-border-radius:5;
+ -fx-border-width:1;
+}
+
+#head{
+  -fx-background-image:url("images/bamboo.jpg");
+}
+
+#WinClose{
+ -fx-background-image:url("images/WinClose.png");
+ -fx-background-position:0% 0%;
+ -fx-cursor:hand;
+}
+
+.hyperlink , .hyperlink:focused{
+  -fx-border-width: 0;
+  -fx-text-fill:rgb(2,88,147);
+}
+#WinClose:hover,#WinZoom:hover{
+ -fx-background-position:33.5% 0%;
+}
