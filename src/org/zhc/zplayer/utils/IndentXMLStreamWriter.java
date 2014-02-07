@@ -4,6 +4,11 @@ import javax.xml.namespace.NamespaceContext;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+/**
+ * 增强的XMLStreamWriter,格式化写入xml文件
+ * @author zhou
+ *
+ */
 public class IndentXMLStreamWriter implements XMLStreamWriter{
   protected XMLStreamWriter out;
 
