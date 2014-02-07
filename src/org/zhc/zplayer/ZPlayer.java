@@ -316,7 +316,7 @@ public class ZPlayer extends Application{
     // .duration(Duration.seconds(1.0))
     // .build();
     if(AppConfig.dataChange){
-      AppConfig.saveXml(playAccordion.getMusicData());
+      AppConfig.saveXmls(playAccordion.getMusicData());
       MusicSearcher.getInstance().cleanTrash();
     }
 

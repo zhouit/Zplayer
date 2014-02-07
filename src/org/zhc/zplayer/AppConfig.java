@@ -4,9 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -16,17 +13,29 @@ import java.util.Properties;
 
 import javafx.util.Duration;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.io.OutputFormat;
-import org.dom4j.io.SAXReader;
-import org.dom4j.io.XMLWriter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.zhc.zplayer.LoadManager.LoadOver;
 import org.zhc.zplayer.search.MusicSearcher;
 import org.zhc.zplayer.utils.IOUtils;
+import org.zhc.zplayer.utils.IndentXMLStreamWriter;
 
-@SuppressWarnings("unchecked")
 public final class AppConfig{
   public static final String LYRIC_DIR = "lyricDir";
 
@@ -99,26 +108,48 @@ public final class AppConfig{
     }
   }
 
-  private static Map<String, List<MusicInfo>> loadXml(){
+  public static Map<String, List<MusicInfo>> loadXmls(){
     Map<String, List<MusicInfo>> maps = null;
     File file = getAppfile();
-    if(file.exists()){
-      Document doc = parseXml(file);
-      Element root = doc.getRootElement();
-      List<Element> groups = (List<Element>) root.elements();
-      maps = new HashMap<String, List<MusicInfo>>();
-      for(Element element : groups){
-        String group_name = element.attributeValue("name");
-        List<MusicInfo> list = new ArrayList<MusicInfo>();
-        for(Object obj : element.elements()){
-          Element tempEle = (Element) obj;
-          MusicInfo music = parseInfo(tempEle);
-          music.group = group_name;
-          list.add(music);
+    if(!file.exists()) return maps;
+
+    try{
+      XMLInputFactory factory = XMLInputFactory.newFactory();
+      XMLStreamReader reader = factory.createXMLStreamReader(new FileInputStream(file), "UTF-8");
+      int type = reader.getEventType();
+      MusicInfo temp = null;
+      String group = null;
+      while(type != XMLStreamConstants.END_DOCUMENT){
+        switch(type){
+        case XMLStreamConstants.START_DOCUMENT:
+          maps = new HashMap<String, List<MusicInfo>>();
+          break;
+        case XMLStreamConstants.START_ELEMENT:
+          String name = reader.getName().toString();
+          if("group".equals(name)){
+            group = reader.getAttributeValue(0);
+            maps.put(group, new ArrayList<MusicInfo>());
+          }else if("music".equals(name)){
+            temp = new MusicInfo();
+          }else if("url".equals(name)){
+            temp.url = reader.getElementText();
+          }else if("time".equals(name)){
+            temp.time = Duration.valueOf(reader.getElementText());
+          }
+
+          break;
+        case XMLStreamConstants.END_ELEMENT:
+          if("music".equals(reader.getName().toString())){
+            maps.get(group).add(temp);
+          }
+
+          break;
         }
 
-        maps.put(group_name, list);
+        type = reader.next();
       }
+    }catch(Exception e){
+      e.printStackTrace();
     }
 
     return maps;
@@ -126,7 +157,7 @@ public final class AppConfig{
 
   public static Map<String, List<MusicInfo>> loadMusic(){
     Map<String, List<MusicInfo>> result = null;
-    result = loadXml();
+    result = loadXmls();
 
     if(result == null){
       result = new HashMap<String, List<MusicInfo>>();
@@ -173,93 +204,72 @@ public final class AppConfig{
     return result;
   }
 
-  static MusicInfo parseInfo(Element element){
-    MusicInfo music = new MusicInfo(element.elementText("url"));
-    String time = element.elementText("time");
-    if(null != time && !"".equals(time.trim())){
-      music.time = Duration.valueOf(time);
-    }
-
-    return music;
-  }
-
-  static void saveXml(Map<String, List<MusicInfo>> maps){
+  static void saveXmls(Map<String, List<MusicInfo>> maps){
     File config = getAppfile();
     File parent = config.getParentFile();
     if(!parent.exists()) parent.mkdir();
     if(config.exists()) config.delete();
 
-    Document doc = DocumentHelper.createDocument();
-    Element root = DocumentHelper.createElement("player");
-    doc.setRootElement(root);
-
-    for(Map.Entry<String, List<MusicInfo>> entry : maps.entrySet()){
-      Element group = DocumentHelper.createElement("group").addAttribute("name", entry.getKey());
-      for(MusicInfo music : entry.getValue()){
-        Element temp = DocumentHelper.createElement("music").addAttribute("id",
-            music.hashCode() + "");
-        temp.add(DocumentHelper.createElement("url").addText(music.url));
-        if(music.time != Duration.ZERO){
-          temp.add(DocumentHelper.createElement("time").addText(music.time.toSeconds() + "s"));
-        }
-
-        group.add(temp);
-      }
-
-      root.add(group);
-    }
-
+    XMLStreamWriter writer = null;
     try{
-      saveDocument(doc, config);
+      XMLOutputFactory factory = XMLOutputFactory.newFactory();
+      writer = new IndentXMLStreamWriter(factory.createXMLStreamWriter(
+          new FileOutputStream(config), "UTF-8"));
+      writer.writeStartDocument("UTF-8", "1.0");
+      writer.writeEndDocument();
+      writer.writeStartElement("player");
+      for(Map.Entry<String, List<MusicInfo>> entry : maps.entrySet()){
+        writer.writeStartElement("group");
+        writer.writeAttribute("name", entry.getKey());
+        for(MusicInfo music : entry.getValue()){
+          writer.writeStartElement("music");
+          writer.writeAttribute("id", music.hashCode() + "");
+
+          writer.writeStartElement("url");
+          writer.writeCharacters(music.url);
+          writer.writeEndElement();
+
+          if(music.time != Duration.ZERO){
+            writer.writeStartElement("time");
+            writer.writeCharacters(music.time.toSeconds() + "s");
+            writer.writeEndElement();
+          }
+          writer.writeEndElement();
+        }
+        writer.writeEndElement();
+      }
+      writer.writeEndElement();
+      writer.flush();
     }catch(Exception e){
       e.printStackTrace();
+    }finally{
+      IOUtils.closeQuietly(writer);
     }
+
   }
 
   public static void updateXml(MusicInfo music){
     File file = getAppfile();
-    if(file.exists()){
-      Document doc = parseXml(file);
-      Element target = (Element) doc.selectSingleNode("/player/group[@name='" + music.group
-          + "']/music[@id='" + music.hashCode() + "']");
-      target.add(DocumentHelper.createElement("time").addText(music.time.toSeconds() + "s"));
-
-      try{
-        saveDocument(doc, file);
-      }catch(Exception e){
-        e.printStackTrace();
-      }
-    }
-  }
-
-  static Document parseXml(File file){
-    Reader reader = null;
+    if(!file.exists()) return;
     try{
-      reader = new InputStreamReader(new FileInputStream(file), "UTF-8");
-      return new SAXReader().read(reader);
+      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+      DocumentBuilder builder = factory.newDocumentBuilder();
+      FileInputStream fin = new FileInputStream(file);
+
+      Document doc = builder.parse(fin);
+      XPath xpath = XPathFactory.newInstance().newXPath();
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+      transformer.setOutputProperty(OutputKeys.INDENT, " ");
+
+      Element ele = (Element) xpath.evaluate("/player/group[@name='" + music.group
+          + "']/music[@id='" + music.hashCode() + "']", doc, XPathConstants.NODE);
+      ele.setAttribute("time", music.time.toSeconds() + "s");
+      transformer.transform(new DOMSource(doc), new StreamResult(new FileOutputStream(file)));
+      fin.close();
     }catch(Exception e){
       e.printStackTrace();
-    }finally{
-      IOUtils.closeQuietly(reader);
     }
-
-    return null;
-  }
-
-  static void saveDocument(Document doc, File file) throws Exception{
-    boolean newLine = false;
-    String indent = "";
-    if(!file.exists()){
-      newLine = true;
-      indent = " ";
-    }
-
-    OutputFormat format = new OutputFormat(indent, newLine);
-    format.setEncoding("UTF-8");
-    XMLWriter writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"),
-        format);
-    writer.write(doc);
-    writer.flush(); // 注意：当XMLWriter构造方法用的是FileWriter时，必须调用此flush（）方法或close（）
   }
 
   public static void debug(Object obj){
