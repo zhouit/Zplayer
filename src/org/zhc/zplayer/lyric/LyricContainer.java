@@ -15,6 +15,8 @@ import org.zhc.zplayer.utils.IOUtils;
 
 public abstract class LyricContainer implements Runnable{
   public static final int refreshInterval = 150;
+  public static boolean lyric_init=false;  // 歌词容器是否实例化
+  
 //  static final Color LEFT_COLOR = Color.rgb(158, 254, 28);
 //  static final Color RIGHT_COLOR = Color.rgb(70, 175, 0);
   static final Color LEFT_COLOR = Color.rgb(253, 251, 10);

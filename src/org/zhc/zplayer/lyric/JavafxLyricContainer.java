@@ -22,7 +22,6 @@ import org.zhc.zplayer.AppConfig;
 import org.zhc.zplayer.PlayAccordion;
 import org.zhc.zplayer.StageDragListener;
 import org.zhc.zplayer.ViewsContext;
-import org.zhc.zplayer.ZPlayer;
 import org.zhc.zplayer.utils.Threads;
 
 public class JavafxLyricContainer extends LyricContainer{
@@ -35,7 +34,7 @@ public class JavafxLyricContainer extends LyricContainer{
     lyricStage = new Stage(StageStyle.TRANSPARENT);
     lyricStage.setX(300);
     lyricStage.setY(600);
-    lyricStage.initOwner(ZPlayer.stage);
+    lyricStage.initOwner(ViewsContext.stage());
     lyricStage.initModality(Modality.NONE);
     lyricStage.setResizable(false);
 

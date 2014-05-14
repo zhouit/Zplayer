@@ -32,7 +32,7 @@ import javafx.stage.StageStyle;
 
 import org.zhc.zplayer.AppConfig;
 import org.zhc.zplayer.StageDragListener;
-import org.zhc.zplayer.ZPlayer;
+import org.zhc.zplayer.ViewsContext;
 import org.zhc.zplayer.utils.ResourceManager;
 
 public class Settings implements EventHandler<ActionEvent>{
@@ -41,7 +41,7 @@ public class Settings implements EventHandler<ActionEvent>{
 
   public Settings(){
     stage = new Stage();
-    stage.initOwner(ZPlayer.stage);
+    stage.initOwner(ViewsContext.stage());
     stage.initStyle(StageStyle.TRANSPARENT);
     stage.initModality(Modality.APPLICATION_MODAL);
     Label title = LabelBuilder.create().translateY(5).text("选项设置").textFill(Color.WHITE).build();

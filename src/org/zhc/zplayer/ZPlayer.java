@@ -1,10 +1,5 @@
 package org.zhc.zplayer;
 
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.TrayIcon;
-import java.awt.event.ActionListener;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransitionBuilder;
@@ -61,9 +56,7 @@ import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;
 
 public class ZPlayer extends Application{
-  boolean lyricInstantiate = false; // 歌词容器是否实例化
 
-  public static Stage stage;
   Stage about;
   StageDragListener listener;
 
@@ -80,7 +73,7 @@ public class ZPlayer extends Application{
   public void start(Stage pstage) throws Exception{
     pstage.initStyle(StageStyle.TRANSPARENT);
     pstage.setResizable(false);
-    stage = pstage;
+    ViewsContext.initStage(pstage);
     pstage.setTitle("ZPlayer");
     pstage.getIcons().add(ResourceManager.loadClasspathImage("icon.png"));
 
@@ -97,7 +90,7 @@ public class ZPlayer extends Application{
     loadTop();
     loadCenter();
     loadBottom();
-    loadTray();
+    TrayManager.getTrayManager().initTray();
 
     PlayAccordion.playIndex.addListener(new ChangeListener<MusicInfo>(){
       public void changed(ObservableValue<? extends MusicInfo> values, MusicInfo old, MusicInfo newv){
@@ -124,12 +117,12 @@ public class ZPlayer extends Application{
         Node label = (Node) event.getTarget();
         if(label.getId().equals("WinClose")){
           if(ResourceManager.isWindows()){
-            stage.hide();
+            ViewsContext.stage().hide();
           }else{
             clearAndQuit();
           }
         }else if(label.getId().equals("WinZoom")){
-          stage.setIconified(true);
+          ViewsContext.stage().setIconified(true);
         }
       }
     };
@@ -160,7 +153,7 @@ public class ZPlayer extends Application{
     AnchorPane.setTopAnchor(cview, 32.0);
 
     // 启用移动stage
-    listener = new StageDragListener(stage);
+    listener = new StageDragListener(ViewsContext.stage());
     listener.enableDrag(top);
 
     root.getChildren().add(top);
@@ -262,10 +255,6 @@ public class ZPlayer extends Application{
             // mc.clear();
           }
         }).build();
-    // fade=FadeTransitionBuilder.create()
-    // .fromValue(0.0).toValue(1.0)
-    // .node(playSearch).duration(Duration.seconds(1.0))
-    // .build();
 
     HBox bottom = HBoxBuilder.create().padding(new Insets(2, 20, 0, 20))
         .children(playAdd, playDel, playModel, playSearch).build();
@@ -278,8 +267,8 @@ public class ZPlayer extends Application{
     if(ViewsContext.player() != null){
       ViewsContext.player().stop();
       ViewsContext.player().currentTimeProperty().removeListener(con);
-      ViewsContext.player().volumeProperty()
-          .unbindBidirectional(con.vslider.valueProperty());
+      ViewsContext.player().volumeProperty().unbindBidirectional(con.vslider.valueProperty());
+      ViewsContext.player().dispose();
       ViewsContext.setPlayer(null);
     }
 
@@ -288,7 +277,7 @@ public class ZPlayer extends Application{
 
     ViewsContext.player().setOnReady(new Runnable(){
       public void run(){
-        lyricInstantiate = true;
+        LyricContainer.lyric_init = true;
         LyricContainer.getLyricContainer().showLyric();
         ViewsContext.player().play();
       }
@@ -311,10 +300,6 @@ public class ZPlayer extends Application{
   }
 
   void clearAndQuit(){
-    // Transition tran=FadeTransitionBuilder.create()
-    // .node(root).fromValue(1.0).toValue(0.0)
-    // .duration(Duration.seconds(1.0))
-    // .build();
     if(AppConfig.dataChange){
       AppConfig.saveXmls(playAccordion.getMusicData());
       MusicSearcher.getInstance().cleanTrash();
@@ -323,13 +308,12 @@ public class ZPlayer extends Application{
     AppConfig.saveSettings();
 
     MusicSearcher.getInstance().close();
-    if(lyricInstantiate) LyricContainer.getLyricContainer().shutdown();
+    if(LyricContainer.lyric_init) LyricContainer.getLyricContainer().shutdown();
     DelayMusicTips.getMusicTips().dispose();
 
     Transition tran = ScaleTransitionBuilder.create().node(root).fromY(1.0).toY(0.0D)
         .duration(Duration.seconds(0.3)).build();
-    if(ViewsContext.player() != null
-        && ViewsContext.player().getStatus() == Status.PLAYING){
+    if(ViewsContext.player() != null && ViewsContext.player().getStatus() == Status.PLAYING){
       tran = ParallelTransitionBuilder
           .create()
           .children(
@@ -344,7 +328,7 @@ public class ZPlayer extends Application{
     tran.setOnFinished(new EventHandler<ActionEvent>(){
       public void handle(ActionEvent event){
         if(ViewsContext.player() != null) ViewsContext.player().stop();
-        stage.close();
+        ViewsContext.stage().close();
         Platform.exit();
       }
     });
@@ -374,7 +358,7 @@ public class ZPlayer extends Application{
     if(about != null) return;
 
     about = new Stage();
-    about.initOwner(ZPlayer.stage);
+    about.initOwner(ViewsContext.stage());
     about.initStyle(StageStyle.TRANSPARENT);
     about.initModality(Modality.APPLICATION_MODAL);
     Label title = LabelBuilder.create().translateY(5).text("关于Zplayer").textFill(Color.WHITE)
@@ -427,65 +411,9 @@ public class ZPlayer extends Application{
   }
 
   public static void main(String[] args){
-    if(ResourceManager.isPreInstance()) return;
+    // if(ResourceManager.isPreInstance()) return;
 
     launch(args);
-  }
-
-  TrayIcon trayIcon;
-
-  void loadTray(){
-    if(!ResourceManager.isWindows()) return;
-
-    // 任务栏图标菜单
-    PopupMenu popupMenu = new PopupMenu();
-    java.awt.MenuItem openItem = new java.awt.MenuItem("打开/关闭");
-    java.awt.MenuItem quitItem = new java.awt.MenuItem("退出");
-
-    ActionListener acl = new ActionListener(){
-      public void actionPerformed(java.awt.event.ActionEvent e){
-        Object source = e.getSource();
-        if(source.getClass() == TrayIcon.class){
-          Platform.runLater(new Runnable(){
-            public void run(){
-              if(!stage.isShowing()) stage.show();
-            }
-          });
-          return;
-        }
-
-        java.awt.MenuItem item = (java.awt.MenuItem) source;
-        if("退出".equals(item.getLabel())){
-          SystemTray.getSystemTray().remove(trayIcon);
-          clearAndQuit();
-        }else if("打开/关闭".equals(item.getLabel())){
-          Platform.runLater(new Runnable(){
-            public void run(){
-              if(!stage.isShowing()){
-                stage.show();
-              }else{
-                stage.hide();
-              }
-            }
-          });
-        }
-      }
-    };
-
-    openItem.addActionListener(acl);
-    quitItem.addActionListener(acl);
-
-    popupMenu.add(openItem);
-    popupMenu.add(quitItem);
-    try{
-      SystemTray tray = SystemTray.getSystemTray();
-      trayIcon = new TrayIcon(ResourceManager.getTrayIcon(), "Zplayer", popupMenu);
-      trayIcon.addActionListener(acl);
-      trayIcon.setToolTip("Zplayer");
-      tray.add(trayIcon);
-    }catch(Exception e){
-      e.printStackTrace();
-    }
   }
 
 }
