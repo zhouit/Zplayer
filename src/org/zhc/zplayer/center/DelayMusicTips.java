@@ -1,9 +1,11 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.zhc.zplayer.resp.MusicInfo;
 
 import javafx.application.Platform;
 import javafx.scene.Node;

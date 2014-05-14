@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,7 +19,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 
-import org.zhc.zplayer.LoadManager.LoadOver;
+import org.zhc.zplayer.PlayAccordion;
+import org.zhc.zplayer.ViewsContext;
+import org.zhc.zplayer.resp.AppConfig;
+import org.zhc.zplayer.resp.MusicInfo;
+import org.zhc.zplayer.resp.LoadManager.LoadOver;
 import org.zhc.zplayer.search.MusicSearcher;
 import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;

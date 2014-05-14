@@ -30,9 +30,9 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import org.zhc.zplayer.AppConfig;
 import org.zhc.zplayer.StageDragListener;
 import org.zhc.zplayer.ViewsContext;
+import org.zhc.zplayer.resp.AppConfig;
 import org.zhc.zplayer.utils.ResourceManager;
 
 public class Settings implements EventHandler<ActionEvent>{

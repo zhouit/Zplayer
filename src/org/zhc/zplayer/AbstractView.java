@@ -1,5 +1,7 @@
 package org.zhc.zplayer;
 
+import org.zhc.zplayer.resp.MusicInfo;
+
 import javafx.scene.Node;
 
 public abstract class AbstractView{

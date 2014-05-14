@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 
 public class ViewsContext{
   public static final String PLAY_ACCORDION = "PlayAccordion";
+  public static final String SEARCH_INPUT = "SEARCH_INPUT";
+  
   private static final Map<String, Object> components = new HashMap<String, Object>();
   private static Stage stage;
   public static MediaPlayer player;

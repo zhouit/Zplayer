@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import javafx.beans.property.StringProperty;
 import javafx.event.EventHandler;

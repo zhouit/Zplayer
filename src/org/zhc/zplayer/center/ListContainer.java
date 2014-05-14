@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,6 +20,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Callback;
 
+import org.zhc.zplayer.PlayAccordion;
+import org.zhc.zplayer.resp.MusicInfo;
 import org.zhc.zplayer.utils.FontUtils;
 import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;

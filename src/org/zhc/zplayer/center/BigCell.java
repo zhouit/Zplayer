@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 
+import org.zhc.zplayer.resp.MusicInfo;
 import org.zhc.zplayer.utils.ResourceManager;
 
 public class BigCell extends Region{

@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -10,6 +10,8 @@ import javafx.scene.image.ImageViewBuilder;
 import javafx.stage.Popup;
 import javafx.stage.Screen;
 
+import org.zhc.zplayer.ViewsContext;
+import org.zhc.zplayer.resp.MusicInfo;
 import org.zhc.zplayer.utils.Locals;
 import org.zhc.zplayer.utils.ResourceManager;
 

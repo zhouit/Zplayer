@@ -23,6 +23,12 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.text.Text;
 import javafx.stage.WindowEvent;
 
+import org.zhc.zplayer.center.DelayMusicTips;
+import org.zhc.zplayer.center.ListContainer;
+import org.zhc.zplayer.center.MenuListener;
+import org.zhc.zplayer.center.MusicContainer;
+import org.zhc.zplayer.resp.AppConfig;
+import org.zhc.zplayer.resp.MusicInfo;
 import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;
 
@@ -235,7 +241,7 @@ public class PlayAccordion implements EventHandler<WindowEvent>{
         new MenuItem("   歌曲信息\t"), new SeparatorMenuItem(), new MenuItem("   搜索相关歌曲\t"));
   }
 
-  EventHandler<ActionEvent> getGroupHandler(){
+  public EventHandler<ActionEvent> getGroupHandler(){
     if(group_menu_handler != null) return this.group_menu_handler;
 
     this.group_menu_handler = new EventHandler<ActionEvent>(){

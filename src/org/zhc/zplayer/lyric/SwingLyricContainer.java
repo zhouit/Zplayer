@@ -26,9 +26,9 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
-import org.zhc.zplayer.AppConfig;
 import org.zhc.zplayer.PlayAccordion;
 import org.zhc.zplayer.ViewsContext;
+import org.zhc.zplayer.resp.AppConfig;
 import org.zhc.zplayer.utils.Threads;
 
 public class SwingLyricContainer extends LyricContainer{

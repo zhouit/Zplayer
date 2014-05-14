@@ -18,7 +18,9 @@ import javafx.event.EventHandler;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
+import org.zhc.zplayer.center.DelayMusicTips;
 import org.zhc.zplayer.lyric.LyricContainer;
+import org.zhc.zplayer.resp.AppConfig;
 import org.zhc.zplayer.search.MusicSearcher;
 import org.zhc.zplayer.utils.ResourceManager;
 
@@ -33,6 +35,9 @@ public class TrayManager implements ActionListener{
   TrayIcon trayIcon;
 
   private TrayManager(){
+    // 默认情况下，Fx运行时会在最后一个stage的close(或hide)后自动关闭，即自动调用Application.stop()
+    // 除非通过Platform.setImplicitExit(false)取消这个默认行为。这样,即使所有Fx窗口关闭（或隐藏）,Fx运行时还在正常运行
+    // 可以再次显示原来的窗口或打开新的窗口。
     Platform.setImplicitExit(!ResourceManager.isWindows());
   }
 
@@ -84,15 +89,20 @@ public class TrayManager implements ActionListener{
     if(LyricContainer.lyric_init) LyricContainer.getLyricContainer().shutdown();
     DelayMusicTips.getMusicTips().dispose();
 
-    Transition tran = ScaleTransitionBuilder.create().node(ViewsContext.stage().getScene().getRoot())
-         .fromY(1.0).toY(0.0D).duration(Duration.seconds(0.3)).build();
-    
+    Transition tran = ScaleTransitionBuilder.create()
+        .node(ViewsContext.stage().getScene().getRoot()).fromY(1.0).toY(0.0D)
+        .duration(Duration.seconds(0.3)).build();
+
     if(ViewsContext.player() != null && ViewsContext.player().getStatus() == Status.PLAYING){
-      tran = ParallelTransitionBuilder.create()
-          .children(tran,TimelineBuilder.create()
-               .keyFrames(new KeyFrame(Duration.seconds(1.0), new KeyValue(ViewsContext.player().volumeProperty(), 0.0)))
-               .build())
-           .build();
+      tran = ParallelTransitionBuilder
+          .create()
+          .children(
+              tran,
+              TimelineBuilder
+                  .create()
+                  .keyFrames(
+                      new KeyFrame(Duration.seconds(1.0), new KeyValue(ViewsContext.player()
+                          .volumeProperty(), 0.0))).build()).build();
     }
 
     tran.setOnFinished(new EventHandler<ActionEvent>(){

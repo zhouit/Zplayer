@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.resp;
 
 import java.text.DecimalFormat;
 

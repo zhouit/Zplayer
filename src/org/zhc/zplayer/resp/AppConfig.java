@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.resp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +31,7 @@ import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.zhc.zplayer.LoadManager.LoadOver;
+import org.zhc.zplayer.resp.LoadManager.LoadOver;
 import org.zhc.zplayer.search.MusicSearcher;
 import org.zhc.zplayer.utils.IOUtils;
 import org.zhc.zplayer.utils.IndentXMLStreamWriter;
@@ -204,7 +204,7 @@ public final class AppConfig{
     return result;
   }
 
-  static void saveXmls(Map<String, List<MusicInfo>> maps){
+  public static void saveXmls(Map<String, List<MusicInfo>> maps){
     File config = getAppfile();
     File parent = config.getParentFile();
     if(!parent.exists()) parent.mkdir();

@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.resp;
 
 import java.util.List;
 import java.util.Map;
@@ -43,7 +43,7 @@ public class LoadManager extends Thread{
     return result;
   }
 
-  static interface LoadOver{
+  public static interface LoadOver{
     public void loadOver();
   }
 

@@ -32,8 +32,8 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.NumericUtils;
 import org.apache.lucene.util.Version;
-import org.zhc.zplayer.AppConfig;
-import org.zhc.zplayer.MusicInfo;
+import org.zhc.zplayer.resp.AppConfig;
+import org.zhc.zplayer.resp.MusicInfo;
 
 import com.chenlb.mmseg4j.analysis.MMSegAnalyzer;
 

@@ -1,4 +1,4 @@
-package org.zhc.zplayer;
+package org.zhc.zplayer.center;
 
 //歌曲分组重命名监听器
 public interface MenuListener{
