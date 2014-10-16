@@ -79,7 +79,8 @@ public class TrayManager implements ActionListener{
 
   public void clearAndQuit(){
     if(AppConfig.dataChange){
-      AppConfig.saveXmls(ViewsContext.getPlayAccordion().getMusicData());
+      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      AppConfig.saveXmls(pa.getMusicData());
       MusicSearcher.getInstance().cleanTrash();
     }
 

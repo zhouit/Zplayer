@@ -190,12 +190,12 @@ public class PlayAccordion implements EventHandler<WindowEvent>{
 
     if(listmc.size() > 0) listmc.get(0).getView().setExpanded(true);
 
-    TitledPane last_play = new TitledPane("  最近播放(2)", new Text("暂无最近播放记录"));
-    last_play.setAnimated(false);
-    last_play.setGraphic(UIBuilder.buildGroupBtn());
-    last_play.setContentDisplay(ContentDisplay.RIGHT);
-    last_play.setGraphicTextGap(160);
-    accordion.getPanes().add(last_play);
+    TitledPane lastPlay = new TitledPane("  最近播放(2)", new Text("暂无最近播放记录"));
+    lastPlay.setAnimated(false);
+    lastPlay.setGraphic(UIBuilder.buildGroupBtn());
+    lastPlay.setContentDisplay(ContentDisplay.RIGHT);
+    lastPlay.setGraphicTextGap(160);
+    accordion.getPanes().add(lastPlay);
   }
 
   void loadContextMenu(Set<String> groups){

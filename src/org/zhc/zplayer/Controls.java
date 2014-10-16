@@ -133,14 +133,16 @@ public class Controls extends AbstractView implements InvalidationListener,
   }
 
   public void run(){
-    ViewsContext.getPlayAccordion().playNextMusic();
+    PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+    pa.playNextMusic();
   }
 
   public void handle(MouseEvent event){
     event.consume();
     Label target = (Label) event.getSource();
     if(ViewsContext.player() == null){
-      ViewsContext.getPlayAccordion().playMusic();
+      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      pa.playMusic();
       play_pause.setId("pause");
       return;
     }
@@ -157,9 +159,11 @@ public class Controls extends AbstractView implements InvalidationListener,
         play_pause.setId("pause");
       }
     }else if(target == prev){
-      ViewsContext.getPlayAccordion().playPrevMusic();
+      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      pa.playPrevMusic();
     }else if(target == next){
-      ViewsContext.getPlayAccordion().playNextMusic();
+      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      pa.playNextMusic();
     }
   }
 

@@ -7,10 +7,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class ViewsContext{
-  public static final String PLAY_ACCORDION = "PlayAccordion";
-  public static final String SEARCH_INPUT = "SEARCH_INPUT";
+  public static final int TOP = 1;
+  public static final int PLAY_ACCORDION = 2;
+  public static final int SEARCH_INPUT = 3;
   
-  private static final Map<String, Object> components = new HashMap<String, Object>();
+  private static final Map<Integer, Object> components = new HashMap<>();
   private static Stage stage;
   public static MediaPlayer player;
 
@@ -30,16 +31,12 @@ public class ViewsContext{
     return stage;
   }
 
-  public static void bindComponent(String key, Object value){
+  public static void bindComponent(int key, Object value){
     components.put(key, value);
   }
 
-  public static Object getComponent(String key){
+  public static Object getComponent(int key){
     return components.get(key);
-  }
-
-  public static PlayAccordion getPlayAccordion(){
-    return (PlayAccordion) components.get(ViewsContext.PLAY_ACCORDION);
   }
 
 }

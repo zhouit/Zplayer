@@ -40,7 +40,8 @@ public class BottomContainer implements EventHandler<MouseEvent>{
     if(search.isVisible()){
       search.setVisible(false);
       search.setText("");
-      ViewsContext.getPlayAccordion().backView();
+      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      pa.backView();
     }else{
       search.setVisible(true);
       MusicSearcher.getInstance().prepare();
