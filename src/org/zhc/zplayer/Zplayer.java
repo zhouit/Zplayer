@@ -17,27 +17,31 @@ import org.zhc.zplayer.resp.MusicInfo;
 import org.zhc.zplayer.utils.ResourceManager;
 
 public class Zplayer extends Application{
+  TopContainer top;
 
   public void start(Stage pstage) throws Exception{
     ViewsContext.initStage(pstage);
-    
-    preshow();
+
+    pstage.initStyle(StageStyle.TRANSPARENT);
+    pstage.setResizable(false);
+    pstage.setTitle("ZPlayer");
+    pstage.getIcons().add(ResourceManager.loadClasspathImage("icon.png"));
 
     Rectangle clip = new Rectangle(300, 635);
     clip.setArcHeight(10.0);
     clip.setArcWidth(10.0);
     VBox root = new VBox();
     root.setId("bg");
-    root.setPrefSize(635, 300);
-    root.setClip(clip);
+    root.setPrefSize(300, 635);
     root.getStylesheets().add(ResourceManager.getResourceUrl("/org/zhc/zplayer/index.css"));
-        
-    final TopContainer top = new TopContainer();
-    ViewsContext.bindComponent(ViewsContext.TOP, top);
+
+    top = new TopContainer();
+    root.getChildren().add(top.getView());
     CenterContainer cc = new CenterContainer();
+    root.getChildren().add(cc.getView());
     BottomContainer bc = new BottomContainer();
 
-    root.getChildren().addAll(top.getView(), cc.getView(), bc.getView());
+    root.getChildren().add(bc.getView());
 
     TrayManager.getTrayManager().initTray();
 
@@ -45,7 +49,7 @@ public class Zplayer extends Application{
       public void changed(ObservableValue<? extends MusicInfo> values, MusicInfo old, MusicInfo newv){
         playMusic(newv);
         top.getControls().setMusic(newv);
-        PlayAccordion pa = (PlayAccordion) ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+        PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
         pa.updateListenView(old, newv);
       }
     });
@@ -57,21 +61,11 @@ public class Zplayer extends Application{
     // 启用移动stage
     StageDragListener listener = new StageDragListener(ViewsContext.stage());
     listener.enableDrag(top.getView());
-    // 启用界面悬浮
-    listener.enableHange();
     pstage.show();
-  }
-  
-  void preshow(){
-    ViewsContext.stage().initStyle(StageStyle.TRANSPARENT);
-    ViewsContext.stage().setResizable(false);
-    ViewsContext.stage().setTitle("ZPlayer");
-    ViewsContext.stage().getIcons().add(ResourceManager.loadClasspathImage("icon.png"));
   }
 
   void playMusic(MusicInfo music){
-    TopContainer tc = (TopContainer) ViewsContext.getComponent(ViewsContext.TOP);
-    Controls con = (Controls) tc.getControls();
+    Controls con = (Controls) top.getControls();
     if(ViewsContext.player() != null){
       ViewsContext.player().stop();
       ViewsContext.player().currentTimeProperty().removeListener(con);

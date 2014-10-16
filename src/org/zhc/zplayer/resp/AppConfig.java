@@ -131,6 +131,7 @@ public final class AppConfig{
             maps.put(group, new ArrayList<MusicInfo>());
           }else if("music".equals(name)){
             temp = new MusicInfo();
+            temp.group = group;
           }else if("url".equals(name)){
             temp.url = reader.getElementText();
           }else if("time".equals(name)){
