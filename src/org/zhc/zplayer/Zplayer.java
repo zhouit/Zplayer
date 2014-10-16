@@ -35,7 +35,7 @@ import org.zhc.zplayer.search.MusicSearcher;
 import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;
 
-public class ZPlayer extends Application{
+public class Zplayer extends Application{
   TopContainer top;
   Label play_list, net_collect, broadcast;
   PlayAccordion playAccordion;
@@ -171,7 +171,6 @@ public class ZPlayer extends Application{
     if(ViewsContext.player() != null){
       ViewsContext.player().stop();
       ViewsContext.player().currentTimeProperty().removeListener(con);
-      ViewsContext.player().volumeProperty().unbindBidirectional(con.vslider.valueProperty());
       ViewsContext.player().dispose();
       ViewsContext.setPlayer(null);
     }

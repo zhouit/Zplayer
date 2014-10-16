@@ -2,33 +2,29 @@ package org.zhc.zplayer;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
-import javafx.scene.control.Slider;
-import javafx.scene.control.SliderBuilder;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.ImageViewBuilder;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
+import org.zhc.zplayer.controls.Zlider;
+import org.zhc.zplayer.controls.Zlider.DragingHandler;
 import org.zhc.zplayer.lyric.LyricContainer;
+import org.zhc.zplayer.utils.ImageUtils;
 import org.zhc.zplayer.utils.ResourceManager;
 import org.zhc.zplayer.utils.StringUtils;
 
 public class Controls extends AbstractView implements InvalidationListener,
     EventHandler<MouseEvent>, Runnable{
   Label name, play_pause, total_time, current_time, prev, next;
-  Slider time_slider, vslider;
+  Zlider time, sound;
   Line timeBar;
 
   public Controls(){
@@ -48,10 +44,24 @@ public class Controls extends AbstractView implements InvalidationListener,
         .layoutY(3.0).build();
     root.getChildren().add(total_time);
 
-    time_slider = SliderBuilder.create().orientation(Orientation.HORIZONTAL).prefWidth(275)
-        .id("time").max(1.0).min(0.0).layoutX(8).layoutY(20).build();
-    time_slider.valueChangingProperty().addListener(new PositionListener());
-    root.getChildren().add(time_slider);
+    time = new Zlider(275, 6,1, ResourceManager.loadClasspathImage("time_thumb.png"));
+    time.setId("time");
+    time.setLayoutX(8);
+    time.setLayoutY(20);
+    time.setDragingHandler(new DragingHandler(){
+      @Override
+      public void dragHandler(double progress){
+        if(ViewsContext.player() == null) return;
+
+        Duration seekTo = music.time.multiply(progress);
+        if(ViewsContext.player().getStatus() == Status.STOPPED){
+          ViewsContext.player().pause();
+        }
+
+        ViewsContext.player().seek(seekTo);
+      }
+    });
+    root.getChildren().add(time);
 
     prev = LabelBuilder.create().prefHeight(45).prefWidth(168 / 4).id("prev").onMouseClicked(this)
         .layoutX(81).layoutY(50).build();
@@ -72,23 +82,30 @@ public class Controls extends AbstractView implements InvalidationListener,
     root.getChildren().add(lyrics);
 
     Label volume = LabelBuilder.create().id("volume_btn").prefWidth(72 / 4).prefHeight(17)
-        .layoutX(205).layoutY(80).build();
+        .layoutX(205).layoutY(78).build();
     root.getChildren().add(volume);
 
-    ImageView sound_bg = ImageViewBuilder.create()
-        .image(ResourceManager.loadClasspathImage("vslider.png")).layoutX(230).layoutY(83).build();
-    root.getChildren().add(sound_bg);
+    sound = new Zlider(61, 12,0, ImageUtils.split(
+        ResourceManager.loadClasspathImage("sound_thumb.png"), 4)[0]);
+    sound.setId("sound");
+    sound.setLayoutX(225);
+    sound.setLayoutY(78);
+    sound.setProgress(0.5D);
+    sound.setDragingHandler(new DragingHandler(){
+      @Override
+      public void dragHandler(double progress){
+        if(ViewsContext.player() == null) return;
 
-    vslider = SliderBuilder.create().orientation(Orientation.HORIZONTAL).prefWidth(61)
-        .id("vslider").max(1.0).value(0.5).layoutX(230).layoutY(80).build();
-
-    root.getChildren().add(vslider);
+        ViewsContext.player().setVolume(progress);
+      }
+    });
+    root.getChildren().add(sound);
 
     super.view = root;
   }
 
   public double getVolume(){
-    return vslider.getValue();
+    return sound.getValue();
   }
 
   protected void updateView(){
@@ -96,8 +113,7 @@ public class Controls extends AbstractView implements InvalidationListener,
     name.setText(music.getFullname());
     total_time.setText("/" + music.formatDuration());
 
-    vslider.setValue(ViewsContext.player().getVolume());
-    vslider.valueProperty().bindBidirectional(ViewsContext.player().volumeProperty());
+    sound.setProgress(ViewsContext.player().getVolume());
 
     ViewsContext.player().currentTimeProperty().addListener(this);
     ViewsContext.player().setOnEndOfMedia(this);
@@ -107,13 +123,12 @@ public class Controls extends AbstractView implements InvalidationListener,
   public void invalidated(Observable observable){
     Duration duration = ViewsContext.player().getCurrentTime();
     current_time.setText(StringUtils.formatDuration(duration));
-    if(time_slider.isValueChanging()) return;
 
     if(music.time == null || duration == null){
-      time_slider.setValue(0.0);
+      time.setProgress(0.0);
     }else{
       double value = duration.toMillis() / music.time.toMillis();
-      time_slider.setValue(value);
+      time.setProgress(value);
     }
   }
 
@@ -145,23 +160,6 @@ public class Controls extends AbstractView implements InvalidationListener,
       ViewsContext.getPlayAccordion().playPrevMusic();
     }else if(target == next){
       ViewsContext.getPlayAccordion().playNextMusic();
-    }
-  }
-
-  private class PositionListener implements ChangeListener<Boolean>{
-
-    public void changed(ObservableValue<? extends Boolean> values, Boolean old, Boolean newv){
-      if(ViewsContext.player() == null) return;
-
-      if(old && !newv){
-        double svalue = time_slider.getValue();
-        Duration seekTo = music.time.multiply(svalue);
-        if(ViewsContext.player().getStatus() == Status.STOPPED){
-          ViewsContext.player().pause();
-        }
-
-        ViewsContext.player().seek(seekTo);
-      }
     }
   }
 

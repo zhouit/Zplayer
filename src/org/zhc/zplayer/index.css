@@ -50,15 +50,28 @@
     -fx-background-color: transparent;
 }
 
-#time .track {
-    -fx-background-color: null;
-    -fx-background-image: url("images/slider.png");
-    -fx-padding:5 0;
+#time .track{
+  -fx-background-color:#99ab93, #163108;
+  -fx-background-radius: 3;
+  -fx-background-insets: 0,0 0 1 0;
 }
 
-#time .thumb{
- -fx-background-color: transparent;
- -fx-background-image: url("images/time_thumb.png");
+#time .bar{
+  -fx-background-color:#FEDA6A;
+  -fx-background-radius: 3;
+  -fx-effect: dropshadow(three-pass-box, white, 10, 0, 1, 1);
+}
+
+#sound .track{
+ -fx-background-color:rgb(59,69,74),linear-gradient(to bottom,rgb(80,90,96),rgb(102,114,120));
+  -fx-background-insets:0 ,1 0 0 0;
+  -fx-background-radius: 5;
+}
+
+#sound .bar{
+ -fx-background-color:rgb(71,80,85),linear-gradient(to bottom,rgb(233,2344,235),rgb(170,179,185));
+ -fx-background-insets:0 ,1 0 1 0;
+ -fx-background-radius: 5;
 }
 
 #prev{

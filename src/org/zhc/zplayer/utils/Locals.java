@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 
 public class Locals{
 
-  // 获取当前节点�?��边与Screen的距�? 该Node的screenX
+  // 获取当前节点左边与Screen的距离该Node的screenX
   public static double getLeftScreen(Node node){
     Parent parent = node.getParent();
     Bounds childBounnds = node.getBoundsInParent();
@@ -40,6 +40,21 @@ public class Locals{
 
     return childBounds.getMinY() + parentBounds.getMinY() + parent.getScene().getY()
         + parent.getScene().getWindow().getY();
+  }
+
+  /**
+   * 求中值
+   * 
+   * @param source
+   * @param left
+   * @param right
+   * @return
+   */
+  public static double balance(double source, double left, double right){
+    source = Math.min(right, source);
+    source = Math.max(source, left);
+
+    return source;
   }
 
 }
