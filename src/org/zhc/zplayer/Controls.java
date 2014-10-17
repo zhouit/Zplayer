@@ -8,10 +8,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBuilder;
 import javafx.scene.control.Label;
 import javafx.scene.control.LabelBuilder;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer.Status;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.util.Duration;
 
 import org.zhc.zplayer.controls.Zlider;
@@ -23,9 +24,10 @@ import org.zhc.zplayer.utils.StringUtils;
 
 public class Controls extends AbstractView implements InvalidationListener,
     EventHandler<MouseEvent>, Runnable{
+  static Image[] vols = ImageUtils.split(ResourceManager.loadClasspathImage("sound_state.png"), 4);
+
   Label name, play_pause, total_time, current_time, prev, next;
   Zlider time, sound;
-  Line timeBar;
 
   public Controls(){
     super();
@@ -44,7 +46,7 @@ public class Controls extends AbstractView implements InvalidationListener,
         .layoutY(3.0).build();
     root.getChildren().add(total_time);
 
-    time = new Zlider(275, 6,1, ResourceManager.loadClasspathImage("time_thumb.png"));
+    time = new Zlider(275, 6, 1, ResourceManager.loadClasspathImage("time_thumb.png"));
     time.setId("time");
     time.setLayoutX(8);
     time.setLayoutY(20);
@@ -81,11 +83,14 @@ public class Controls extends AbstractView implements InvalidationListener,
     Button lyrics = ButtonBuilder.create().id("lyric_btn").layoutX(5).layoutY(74).build();
     root.getChildren().add(lyrics);
 
-    Label volume = LabelBuilder.create().id("volume_btn").prefWidth(72 / 4).prefHeight(17)
-        .layoutX(205).layoutY(78).build();
+    final ImageView volume = new ImageView(vols[2]);
+    volume.setFitHeight(17);
+    volume.setFitWidth(72 / 4);
+    volume.setLayoutX(200);
+    volume.setLayoutY(78);
     root.getChildren().add(volume);
 
-    sound = new Zlider(61, 12,0, ImageUtils.split(
+    sound = new Zlider(61, 12, 0, ImageUtils.split(
         ResourceManager.loadClasspathImage("sound_thumb.png"), 4)[0]);
     sound.setId("sound");
     sound.setLayoutX(225);
@@ -94,6 +99,16 @@ public class Controls extends AbstractView implements InvalidationListener,
     sound.setDragingHandler(new DragingHandler(){
       @Override
       public void dragHandler(double progress){
+        if(progress == 0){
+          volume.setImage(vols[0]);
+        }else if(progress <= 0.35D){
+          volume.setImage(vols[1]);
+        }else if(progress <= 0.65D){
+          volume.setImage(vols[2]);
+        }else{
+          volume.setImage(vols[3]);
+        }
+
         if(ViewsContext.player() == null) return;
 
         ViewsContext.player().setVolume(progress);
@@ -133,7 +148,7 @@ public class Controls extends AbstractView implements InvalidationListener,
   }
 
   public void run(){
-    PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+    PlayAccordion pa = (PlayAccordion) ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
     pa.playNextMusic();
   }
 
@@ -141,7 +156,7 @@ public class Controls extends AbstractView implements InvalidationListener,
     event.consume();
     Label target = (Label) event.getSource();
     if(ViewsContext.player() == null){
-      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      PlayAccordion pa = (PlayAccordion) ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
       pa.playMusic();
       play_pause.setId("pause");
       return;
@@ -159,10 +174,10 @@ public class Controls extends AbstractView implements InvalidationListener,
         play_pause.setId("pause");
       }
     }else if(target == prev){
-      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      PlayAccordion pa = (PlayAccordion) ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
       pa.playPrevMusic();
     }else if(target == next){
-      PlayAccordion pa=(PlayAccordion)ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
+      PlayAccordion pa = (PlayAccordion) ViewsContext.getComponent(ViewsContext.PLAY_ACCORDION);
       pa.playNextMusic();
     }
   }

@@ -127,11 +127,6 @@
   -fx-graphic: url("images/lyric_btn.png");
 }
 
-#volume_btn{
-  -fx-background-image:url("images/sound_state.png");
- -fx-background-position: 33.5% 0%;  /* 48% 0% */
-}
-
 #vslider .track{
   -fx-background-color: transparent;
 }

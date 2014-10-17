@@ -28,7 +28,7 @@ public class CenterContainer implements EventHandler<MouseEvent>{
 
   public CenterContainer(){
     view = new VBox();
-    
+
     HBox tabs = new HBox();
     playList = new Label("   播放列表");
     playList.setId("play_list");
@@ -37,6 +37,11 @@ public class CenterContainer implements EventHandler<MouseEvent>{
     playList.setAlignment(Pos.CENTER);
     playList.setOnMouseClicked(this);
     tabs.getChildren().add(playList);
+
+    Label leftBtn = new Label();
+    leftBtn.setId("tab_left_btn");
+    leftBtn.setPrefSize(72 / 4, 32.5);
+    tabs.getChildren().add(leftBtn);
 
     netCollect = new Label("网络收藏", ResourceManager.getViewOfClasspath("favorite.png"));
     netCollect.setId("net_collect");
@@ -55,10 +60,10 @@ public class CenterContainer implements EventHandler<MouseEvent>{
     tabs.getChildren().add(broadcast);
 
     initMusicView();
-    
+
     view.getChildren().addAll(tabs, musicView);
   }
-  
+
   public Node getView(){
     return view;
   }
@@ -110,7 +115,7 @@ public class CenterContainer implements EventHandler<MouseEvent>{
       view.getChildren().set(1, collect);
     }
   }
-  
+
   void initCollect(){
     if(collect != null) return;
 
