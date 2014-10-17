@@ -81,7 +81,7 @@ public final class UIBuilder{
 	  if(desktop.isSupported(Action.MAIL)&&mail){
 		 desktop.mail(new URI("mailto:155811492@qq.com"));
 	  }else if(desktop.isSupported(Action.BROWSE)){
-		 desktop.browse(new URI("http://www.javafx.com/"));	
+		 desktop.browse(new URI("http://www.zhouhaocheng.cn/"));	
 	   }
 	}catch(IOException e){
 	  e.printStackTrace();

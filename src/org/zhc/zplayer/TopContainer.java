@@ -137,7 +137,7 @@ public class TopContainer implements EventHandler<MouseEvent>{
     Text describe = new Text("  长江大学 软工一班 周浩成 版权所有\n\n" + "本程序所有图片资源均来自于酷狗播放器\n");
     describe.setFont(Font.font("KaiTi", FontWeight.BOLD, 16));
 
-    Hyperlink http = new Hyperlink("www.javafx.com");
+    Hyperlink http = new Hyperlink("www.zhouhaocheng.cn");
     http.setTranslateY(-1.0);
     http.setOnMouseClicked(aboutHandler);
 
@@ -155,7 +155,7 @@ public class TopContainer implements EventHandler<MouseEvent>{
             describe,
             ResourceManager.getViewOfClasspath("javafx.jpg"),
             HBoxBuilder.create().padding(new Insets(0, 0, 0, 65))
-                .children(new Label("官方网站:"), http).build()).clip(clip).id("bg")
+                .children(new Label("作者博客:"), http).build()).clip(clip).id("bg")
         .stylesheets(ResourceManager.getResourceUrl("/org/zhc/zplayer/about.css")).build();
 
     StageDragListener sdl = new StageDragListener(about);

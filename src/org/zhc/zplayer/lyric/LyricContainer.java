@@ -15,16 +15,16 @@ import org.zhc.zplayer.utils.IOUtils;
 
 public abstract class LyricContainer implements Runnable{
   public static final int refreshInterval = 150;
-  public static boolean lyric_init=false;  // 歌词容器是否实例化
-  
-//  static final Color LEFT_COLOR = Color.rgb(158, 254, 28);
-//  static final Color RIGHT_COLOR = Color.rgb(70, 175, 0);
+  public static boolean lyric_init = false; // 歌词容器是否实例化
+
+  // static final Color LEFT_COLOR = Color.rgb(158, 254, 28);
+  // static final Color RIGHT_COLOR = Color.rgb(70, 175, 0);
   static final Color LEFT_COLOR = Color.rgb(253, 251, 10);
   static final Color RIGHT_COLOR = Color.rgb(240, 240, 240);
 
-//  static final Color TOP_COLOR = Color.rgb(238, 254, 218);
-//  static final Color CENTER_COLOR = Color.rgb(153, 254, 17);
-//  static final Color BOTTOM_COLOR = Color.rgb(232, 254, 3);
+  // static final Color TOP_COLOR = Color.rgb(238, 254, 218);
+  // static final Color CENTER_COLOR = Color.rgb(153, 254, 17);
+  // static final Color BOTTOM_COLOR = Color.rgb(232, 254, 3);
 
   protected List<Sentence> sentences;
   protected volatile boolean isPlay, shutdown;
@@ -69,7 +69,8 @@ public abstract class LyricContainer implements Runnable{
       reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "GBK"));
       String line = null;
       while((line = reader.readLine()) != null){
-        if(!Character.isDigit(line.charAt(1))) continue;
+        if(line.length() < 1 || !Character.isDigit(line.charAt(1))) continue;
+        
         String time = line.substring(1, 9);
         Sentence sentence = new Sentence(Sentence.parseTime(time), line.substring(10));
         sentences.get(sentences.size() - 1).setToTime(sentence.fromTime);
