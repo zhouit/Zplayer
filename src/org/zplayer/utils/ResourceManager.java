@@ -71,7 +71,7 @@ public class ResourceManager{
     Image result = null;
     InputStream in = null;
     try{
-      in = ResourceManager.class.getResourceAsStream("/org/zhc/zplayer/images/" + fileName);
+      in = ResourceManager.class.getResourceAsStream("/org/zplayer/images/" + fileName);
       result = new Image(in);
     }catch(Exception e){
       e.printStackTrace();
@@ -101,7 +101,7 @@ public class ResourceManager{
   public static BufferedImage getTrayIcon(){
     try{
       return ImageIO.read(ResourceManager.class
-          .getResourceAsStream("/org/zhc/zplayer/images/icon.gif"));
+          .getResourceAsStream("/org/zplayer/images/icon.gif"));
     }catch(Exception e){
       e.printStackTrace();
       return null;

@@ -6,16 +6,11 @@ import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionListener;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.ParallelTransitionBuilder;
 import javafx.animation.ScaleTransitionBuilder;
-import javafx.animation.TimelineBuilder;
 import javafx.animation.Transition;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.media.MediaPlayer.Status;
 import javafx.util.Duration;
 
 import org.zplayer.center.DelayMusicTips;
@@ -93,18 +88,6 @@ public class TrayManager implements ActionListener{
     Transition tran = ScaleTransitionBuilder.create()
         .node(ViewsContext.stage().getScene().getRoot()).fromY(1.0).toY(0.0D)
         .duration(Duration.seconds(0.3)).build();
-
-    if(ViewsContext.player() != null && ViewsContext.player().getStatus() == Status.PLAYING){
-      tran = ParallelTransitionBuilder
-          .create()
-          .children(
-              tran,
-              TimelineBuilder
-                  .create()
-                  .keyFrames(
-                      new KeyFrame(Duration.seconds(1.0), new KeyValue(ViewsContext.player()
-                          .volumeProperty(), 0.0))).build()).build();
-    }
 
     tran.setOnFinished(new EventHandler<ActionEvent>(){
       public void handle(ActionEvent event){

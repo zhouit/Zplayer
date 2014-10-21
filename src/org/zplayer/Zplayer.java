@@ -33,7 +33,7 @@ public class Zplayer extends Application{
     VBox root = new VBox();
     root.setId("bg");
     root.setPrefSize(300, 635);
-    root.getStylesheets().add(ResourceManager.getResourceUrl("/org/zhc/zplayer/index.css"));
+    root.getStylesheets().add(ResourceManager.getResourceUrl("/org/zplayer/index.css"));
 
     top = new TopContainer();
     root.getChildren().add(top.getView());
