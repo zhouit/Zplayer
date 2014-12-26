@@ -63,7 +63,7 @@ public class Settings implements EventHandler<ActionEvent>{
     clip.setArcWidth(10.0);
     VBox root = VBoxBuilder.create().prefWidth(400).prefHeight(330)
         .children(head, loadTab(), createBottom()).clip(clip).id("bg")
-        .stylesheets(ResourceManager.getResourceUrl("/org/zhc/zplayer/settings/settings.css"))
+        .stylesheets(ResourceManager.getResourceUrl("/org/zplayer/settings/settings.css"))
         .build();
 
     StageDragListener sdl = new StageDragListener(stage);
